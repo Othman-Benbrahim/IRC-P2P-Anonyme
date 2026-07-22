@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "IRC P2P Anonyme",
+  "version": "0.1.0",
+  "description": "Réseau IRC décentralisé en P2P (WebRTC), avec protection d'anonymat via proxy/VPN.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "irc-p2p@exemple.org",
+      "strict_min_version": "115.0"
+    }
+  },
+  "permissions": ["storage", "tabs"],
+  "host_permissions": ["https://api.ipify.org/*"],
+  "background": {
+    "scripts": ["src/startup.js"]
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "IRC P2P Anonyme"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}
