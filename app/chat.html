@@ -1,1 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="chat.css" />
+  <title>IRC P2P — Réseau</title>
+</head>
+<body>
+  <aside id="side">
+    <div class="me">
+      <input id="nick" placeholder="pseudo" maxlength="24" />
+      <input id="about" placeholder="statut (optionnel)" maxlength="140" />
+      <button id="saveProfile">Enregistrer</button>
+    </div>
 
+    <div class="block">
+      <div class="block-h"><span>Salons</span><button id="addChan" title="Rejoindre / créer">＋</button></div>
+      <div id="chanForm" class="form" hidden>
+        <input id="chanName" placeholder="#nom-du-salon" />
+        <input id="chanPass" type="password" placeholder="mot de passe (optionnel)" />
+        <button id="chanJoin">Rejoindre</button>
+      </div>
+      <ul id="chanList" class="list"></ul>
+    </div>
+
+    <div class="block">
+      <div class="block-h"><span>En ligne</span></div>
+      <ul id="presList" class="list"></ul>
+    </div>
+
+    <div class="block">
+      <div class="block-h"><span>Connexion</span></div>
+      <div class="form">
+        <input id="netName" placeholder="nom secret du réseau" spellcheck="false" />
+        <select id="netStrategy">
+          <option value="nostr">Nostr (public)</option>
+          <option value="torrent">BitTorrent (public)</option>
+        </select>
+        <textarea id="relayUrls" placeholder="relais/trackers perso — wss:// uniquement (un par ligne)"></textarea>
+        <div class="deflabel">Par défaut — cliquer pour ajouter · <a id="addAll" href="#">tout ajouter</a></div>
+        <div id="defaultRelays" class="chips"></div>
+        <div class="links">
+          <a href="https://nostr.watch/" target="_blank" rel="noreferrer">Relais Nostr ↗</a>
+          <a href="https://github.com/ngosang/trackerslist" target="_blank" rel="noreferrer">Trackers BitTorrent ↗</a>
+        </div>
+        <div class="drow">
+          <button id="netConnect" class="grow">Découverte auto</button>
+          <button id="netOff" class="secondary">✕</button>
+        </div>
+        <span id="netStatus" class="sub">inactif</span>
+        <button id="openPair" class="secondary">📷 Appairer manuellement</button>
+      </div>
+    </div>
+
+    <div class="foot">
+      <button id="opts" class="secondary" title="Anonymat / proxy">⚙ Anonymat</button>
+    </div>
+  </aside>
+
+  <main id="main">
+    <header id="feedHead"><span id="target">#general</span></header>
+    <div id="feed" aria-live="polite"></div>
+    <form id="composer">
+      <input id="msg" placeholder="Votre message…" autocomplete="off" />
+      <button type="submit">Envoyer</button>
+    </form>
+  </main>
+
+  <div id="pairModal" class="modal" hidden>
+    <div class="sheet">
+      <div class="modal-h"><strong>Appairer un appareil (sans serveur)</strong><button id="pairClose" class="secondary">Fermer</button></div>
+      <div class="tabs">
+        <button class="tab active" data-tab="pInit">J'invite</button>
+        <button class="tab" data-tab="pJoin">Je rejoins</button>
+      </div>
+
+      <section id="pInit" class="pane active">
+        <button id="genInvite">Générer l'invitation</button>
+        <div id="inviteOut" hidden>
+          <img id="inviteQr" class="qr" alt="QR" />
+          <textarea id="inviteLink" readonly></textarea>
+          <button id="copyInvite" class="secondary">Copier le lien</button>
+          <p class="sub">Faites scanner ce QR (ou envoyez le lien) a l'autre appareil.</p>
+        </div>
+        <div class="scanrow"><button id="scanAnswer" class="secondary">📷 Scanner la réponse</button><span class="sub">ou collez :</span></div>
+        <video id="answerCam" class="cam" playsinline hidden></video>
+        <textarea id="answerIn" placeholder="Collez la réponse recue"></textarea>
+        <button id="finalize">Finaliser</button>
+        <p id="initStatus" class="sub"></p>
+      </section>
+
+      <section id="pJoin" class="pane">
+        <div class="scanrow"><button id="scanInvite" class="secondary">📷 Scanner l'invitation</button><span class="sub">ou collez :</span></div>
+        <video id="inviteCam" class="cam" playsinline hidden></video>
+        <textarea id="inviteIn" placeholder="Collez l'invitation recue"></textarea>
+        <button id="genAnswer">Générer la réponse</button>
+        <div id="answerOut" hidden>
+          <img id="answerQr" class="qr" alt="QR" />
+          <textarea id="answerLink" readonly></textarea>
+          <button id="copyAnswer" class="secondary">Copier le lien</button>
+          <p class="sub">Faites scanner ce QR (ou envoyez le lien) a l'autre appareil.</p>
+        </div>
+        <p id="joinStatus" class="sub"></p>
+      </section>
+    </div>
+  </div>
+
+  <script src="../src/crypto-utils.js"></script>
+  <script src="../src/protocol.js"></script>
+  <script src="../src/storage.js"></script>
+  <script src="../src/peer-manager.js"></script>
+  <script src="../vendor/discovery-trystero.bundle.js"></script>
+  <script src="../vendor/qrcode-generator.js"></script>
+  <script src="../vendor/jsQR.js"></script>
+  <script src="engine.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>
