@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="options.css" />
+  <title>IRC P2P Anonyme — Options</title>
+</head>
+<body>
+  <h1>Anonymat réseau</h1>
 
+  <section>
+    <h2>1. Configurer le proxy dans Firefox</h2>
+    <p>
+      Une extension ne peut pas modifier <code>about:config</code>.
+      La configuration est donc <strong>manuelle</strong>. Ouvrez
+      <code>about:config</code> et réglez :
+    </p>
+    <pre>network.proxy.type            = 1
+network.proxy.socks           = 127.0.0.1
+network.proxy.socks_port      = 1080
+network.proxy.socks_remote_dns = true
+media.peerconnection.ice.proxy_only = true</pre>
+    <p class="warn">
+      ⚠️ Port <code>1080</code> = valeur typique pour un SOCKS5 local (Mozilla VPN,
+      Tor, etc.). Adaptez selon votre fournisseur. Redémarrez Firefox après coup.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Vérifier l'absence de fuite d'IP</h2>
+    <p>
+      Ce test compare l'IP vue via une requête HTTPS et l'IP éventuellement
+      exposée par WebRTC. Si <code>ice.proxy_only</code> fonctionne, WebRTC ne
+      doit révéler <em>aucune</em> IP locale/publique.
+    </p>
+    <button id="runTest">Lancer le test de fuite</button>
+    <div id="result" class="result"></div>
+  </section>
+
+  <script src="options.js"></script>
+</body>
+</html>

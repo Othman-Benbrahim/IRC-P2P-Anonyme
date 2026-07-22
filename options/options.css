@@ -1,0 +1,67 @@
+body {
+  font: 14px/1.55 system-ui, sans-serif;
+  max-width: 640px;
+  margin: 32px auto;
+  padding: 0 20px;
+  color: #1a1c22;
+}
+h1 { font-size: 20px; }
+h2 { font-size: 16px; margin-top: 28px; }
+code { background: #eef0f4; padding: 1px 5px; border-radius: 4px; }
+pre {
+  background: #16181d;
+  color: #d8dee9;
+  padding: 12px 14px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 12.5px;
+}
+.warn { color: #a15c00; }
+button {
+  background: #6ea8fe;
+  color: #fff;
+  border: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover { background: #4f8ef0; }
+.result {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f4f6fa;
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 12.5px;
+  min-height: 20px;
+}
+.result.ok { background: #e7f7ec; }
+.result.ko { background: #fdecec; }
+
+#relayAddr {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccd2dd;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.row { display: flex; align-items: center; gap: 8px; }
+button.secondary { background: #eef0f4; color: #1a1c22; }
+button.secondary:hover { background: #e2e6ee; }
+.badge {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: #eef0f4;
+  color: #6b7280;
+}
+.badge.on { background: #e7f7ec; color: #1a7f37; }
+.badge.err { background: #fdecec; color: #b42318; }
+
+.drow { display: flex; gap: 8px; margin-bottom: 8px; }
+#netName { flex: 1; padding: 8px 10px; border: 1px solid #ccd2dd; border-radius: 8px; font-size: 13px; }
+#netStrategy { padding: 8px 10px; border: 1px solid #ccd2dd; border-radius: 8px; font-size: 13px; background: #fff; }
