@@ -1,0 +1,9 @@
+body { width: 260px; margin: 0; font: 14px/1.5 system-ui, sans-serif; background: #16181d; color: #d8dee9; }
+.launcher { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+h1 { font-size: 16px; margin: 0; }
+p { margin: 0; color: #8b93a7; font-size: 12.5px; }
+button { border: 0; border-radius: 8px; padding: 9px; cursor: pointer; font-size: 14px; font-weight: 600; }
+.primary { background: #6ea8fe; color: #0b1220; }
+.primary:hover { filter: brightness(1.08); }
+.secondary { background: #2a2f3a; color: #d8dee9; font-weight: 500; }
+.secondary:hover { background: #333a47; }
