@@ -11,36 +11,52 @@ const unread = new Map();
 
 function targetKey(t) { return t.kind + ":" + t.name; }
 function fmtTime(ts) { return new Date(ts).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }); }
-function esc(s) { return (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 function matches(e, t) {
   if (t.kind === "channel") return e.type === "channelmsg" && e.channel === t.name;
   return e.type === "privmsg" && ((e.dir === "in" && e.from === t.name) || (e.dir === "out" && e.to === t.name));
 }
 
+// Petit helper : crée un élément avec classe/texte (évite innerHTML).
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+
 function renderSidebar() {
-  const cl = $("#chanList"); cl.innerHTML = "";
+  const cl = $("#chanList"); clear(cl);
   for (const c of channels) {
     const li = document.createElement("li");
     if (selected.kind === "channel" && selected.name === c.name) li.classList.add("active");
     const u = unread.get("channel:" + c.name) || 0;
-    li.innerHTML = `<span class="grow">${c.locked ? "🔒 " : ""}${esc(c.name)}</span>` + (u ? `<span class="badge">${u}</span>` : "") + `<span class="x" title="Quitter">×</span>`;
-    li.querySelector(".grow").onclick = () => select({ kind: "channel", name: c.name });
-    li.querySelector(".x").onclick = (ev) => { ev.stopPropagation(); Engine.partChannel(c.name); };
+    const name = el("span", "grow", (c.locked ? "🔒 " : "") + c.name);
+    li.appendChild(name);
+    if (u) li.appendChild(el("span", "badge", String(u)));
+    const x = el("span", "x", "×"); x.title = "Quitter";
+    li.appendChild(x);
+    name.onclick = () => select({ kind: "channel", name: c.name });
+    x.onclick = (ev) => { ev.stopPropagation(); Engine.partChannel(c.name); };
     cl.appendChild(li);
   }
   for (const nick of dmThreads) {
     const li = document.createElement("li");
     if (selected.kind === "dm" && selected.name === nick) li.classList.add("active");
     const u = unread.get("dm:" + nick) || 0;
-    li.innerHTML = `<span class="grow">🔒 ${esc(nick)}</span>` + (u ? `<span class="badge">${u}</span>` : "");
+    li.appendChild(el("span", "grow", "🔒 " + nick));
+    if (u) li.appendChild(el("span", "badge", String(u)));
     li.onclick = () => select({ kind: "dm", name: nick });
     cl.appendChild(li);
   }
-  const pl = $("#presList"); pl.innerHTML = "";
+  const pl = $("#presList"); clear(pl);
   for (const p of presenceArr) {
     if (p.nick === myNick) continue;
     const li = document.createElement("li");
-    li.innerHTML = `<span class="dot ${p.online ? "on" : ""}"></span><span class="grow">${esc(p.nick)}` + (p.about ? `<div class="sub">${esc(p.about)}</div>` : "") + `</span>`;
+    li.appendChild(el("span", "dot" + (p.online ? " on" : "")));
+    const wrap = el("span", "grow", p.nick);
+    if (p.about) wrap.appendChild(el("div", "sub", p.about));
+    li.appendChild(wrap);
     li.title = "Message privé à " + p.nick;
     li.onclick = () => { dmThreads.add(p.nick); select({ kind: "dm", name: p.nick }); };
     pl.appendChild(li);
@@ -48,25 +64,25 @@ function renderSidebar() {
 }
 
 function renderFeed() {
-  const feed = $("#feed"); feed.innerHTML = "";
+  const feed = $("#feed"); clear(feed);
   const t = selected;
-  $("#target").innerHTML = t.kind === "channel"
-    ? `${(channels.find((c) => c.name === t.name) || {}).locked ? "🔒 " : ""}${esc(t.name)}`
-    : `Message privé — ${esc(t.name)} 🔒`;
+  const locked = t.kind === "channel" && (channels.find((c) => c.name === t.name) || {}).locked;
+  $("#target").textContent = t.kind === "channel"
+    ? (locked ? "🔒 " : "") + t.name
+    : "Message privé — " + t.name + " 🔒";
   for (const e of log) if (matches(e, t)) appendLine(e);
   feed.scrollTop = feed.scrollHeight;
 }
 
 function appendLine(e) {
   const feed = $("#feed");
-  const div = document.createElement("div");
-  div.className = "line " + (e.dir === "in" ? "in" : "out");
-  let badge = "";
-  if (e.warning) badge += `<span class="b warn" title="${esc(e.warning)}">⚠</span>`;
-  if (e.encrypted) badge += `<span class="b enc" title="chiffré">🔒</span>`;
-  if (e.verified && !e.warning) badge += `<span class="b ok" title="signature vérifiée">✓</span>`;
-  const who = e.dir === "in" ? (e.from || "?") : myNick;
-  div.innerHTML = `${badge}<span class="who">${esc(who)}</span> ${esc(e.text)}<span class="ts">${fmtTime(e.ts)}</span>`;
+  const div = el("div", "line " + (e.dir === "in" ? "in" : "out"));
+  if (e.warning) { const b = el("span", "b warn", "⚠"); b.title = e.warning; div.appendChild(b); }
+  if (e.encrypted) { const b = el("span", "b enc", "🔒"); b.title = "chiffré"; div.appendChild(b); }
+  if (e.verified && !e.warning) { const b = el("span", "b ok", "✓"); b.title = "signature vérifiée"; div.appendChild(b); }
+  div.appendChild(el("span", "who", e.dir === "in" ? (e.from || "?") : myNick));
+  div.appendChild(document.createTextNode(" " + (e.text || "")));
+  div.appendChild(el("span", "ts", fmtTime(e.ts)));
   feed.appendChild(div); feed.scrollTop = feed.scrollHeight;
 }
 
@@ -149,7 +165,7 @@ function addUrl(url) {
   $("#relayUrls").value = [...set].join("\n");
 }
 function renderDefaults(strategy) {
-  const box = $("#defaultRelays"); box.innerHTML = "";
+  const box = $("#defaultRelays"); clear(box);
   const list = ((typeof TrysteroDiscovery !== "undefined" && TrysteroDiscovery.defaults) || {})[strategy] || [];
   for (const url of list) {
     const chip = document.createElement("button");
