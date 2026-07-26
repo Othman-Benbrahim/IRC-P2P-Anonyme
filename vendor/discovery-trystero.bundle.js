@@ -17,9 +17,9 @@ var TrysteroDiscovery = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // dt.js
-  var dt_exports = {};
-  __export(dt_exports, {
+  // vendor/discovery-trystero.js
+  var discovery_trystero_exports = {};
+  __export(discovery_trystero_exports, {
     TrysteroDiscovery: () => TrysteroDiscovery,
     defaults: () => defaults
   });
@@ -3819,7 +3819,7 @@ var TrysteroDiscovery = (() => {
     "tracker.files.fm:7073/announce"
   ].map((url) => "wss://" + url);
 
-  // dt.js
+  // vendor/discovery-trystero.js
   var APP_ID = "ircp2p-net";
   var TrysteroDiscovery = class {
     constructor() {
@@ -3863,7 +3863,7 @@ var TrysteroDiscovery = (() => {
     }
   };
   var defaults = { nostr: defaultRelayUrls, torrent: defaultRelayUrls2 };
-  return __toCommonJS(dt_exports);
+  return __toCommonJS(discovery_trystero_exports);
 })();
 /*! Bundled license information:
 
